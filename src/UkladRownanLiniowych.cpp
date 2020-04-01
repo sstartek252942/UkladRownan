@@ -71,15 +71,15 @@ const Wektor UkladRownanLiniowych::rozwiaz(MetodaUkladu metoda) const
 
     //*****pierwsza kolumna*****//
     if (M2[0][0] == 0) {if (M2[1][0] == 0) {if (M2[2][0] == 0) {std::cerr << ERRORNOANSWER << std::endl; exit(0);}
-                                          else {M2 = M2.SwapVertical(0,2); wynik = wynik.Swap(0,2);}}
-                       else {M2 = M2.SwapVertical(0,1); wynik = wynik.Swap(0,1);}}
+                                          else {M2 = M2.SwapLineVertical(0,2); wynik = wynik.Swap(0,2);}}
+                       else {M2 = M2.SwapLineVertical(0,1); wynik = wynik.Swap(0,1);}}
 
     wynik[1] = wynik[1] - wynik[0] * (M2[1][0] / M2[0][0]);	M2[1] = M2[1] - M2[0] * (M2[1][0] / M2[0][0]); 
     wynik[2] = wynik[2] - wynik[0] * (M2[2][0] / M2[0][0]);	M2[2] = M2[2] - M2[0] * (M2[2][0] / M2[0][0]); 
     
     //*****druga kolumna*****//
     if (M2[1][1] == 0) {if (M2[2][1] == 0) {std::cerr << ERRORNOANSWER << std::endl; exit(0);}
-                       else {M2 = M2.SwapVertical(1,2); wynik = wynik.Swap(1,2);}}
+                       else {M2 = M2.SwapLineVertical(1,2); wynik = wynik.Swap(1,2);}}
 
     wynik[2] = wynik[2] - wynik[1] * (M2[2][1] / M2[1][1]);	M2[2] = M2[2] - M2[1] * (M2[2][1] / M2[1][1]); 
 
@@ -101,7 +101,7 @@ const Wektor UkladRownanLiniowych::rozwiaz(MetodaUkladu metoda) const
     return wynik;
   
   case odwrotna:
-    M2 = M2.transponuj().odwroc();
+    M2 = M2.odwroc();
     wynik = M2 * this->wektor;
   return wynik;
 

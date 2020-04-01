@@ -105,7 +105,7 @@ bool Macierz::operator != (const Macierz & M2) const
   return !(*this==M2);
 }
   
-Macierz Macierz::transponuj() const
+const Macierz Macierz::transponuj() const
 {
   Macierz M2;
   for (int j = 0; j < ROZMIAR; j++)
@@ -151,7 +151,7 @@ const Macierz Macierz::odwroc() const
     for (int i = 0; i < ROZMIAR; i++)
         M2[i][j] = (*this).dopelnienie(i,j) / Wyznacznik;
   }
-  return M2;
+  return M2.transponuj();
 }
 
 double Macierz::Wyznacznik(MetodaWyznacznika metoda) const //sarrus, laplace, gauss
@@ -166,9 +166,9 @@ double Macierz::Wyznacznik(MetodaWyznacznika metoda) const //sarrus, laplace, ga
     return temp;
 
   case laplace:
-    temp += (*this)[0][0] * ((*this)[1][1] * (*this)[2][2] - (*this)[1][2] * (*this)[2][1]);
-    temp -= (*this)[1][0] * ((*this)[0][1] * (*this)[2][2] - (*this)[0][2] * (*this)[2][1]);
-    temp += (*this)[2][0] * ((*this)[0][1] * (*this)[1][2] - (*this)[1][1] * (*this)[0][2]);
+    temp += (*this)[0][0] * ((*this).dopelnienie(0,0));
+    temp -= (*this)[1][0] * ((*this).dopelnienie(1,0));
+    temp += (*this)[2][0] * ((*this).dopelnienie(2,0));
     return temp;
   
   case gauss:
@@ -185,7 +185,7 @@ double Macierz::Wyznacznik(MetodaWyznacznika metoda) const //sarrus, laplace, ga
   exit(0);
 }
 
-const Macierz Macierz::SwapHorizontal(int w1, int w2) const
+const Macierz Macierz::SwapLineHorizontal(int w1, int w2) const
 {
   Macierz M2((*this).transponuj());
   if (w1 < 0 || w1 >= ROZMIAR || w2 < 0 || w2 >= ROZMIAR)
@@ -201,7 +201,7 @@ const Macierz Macierz::SwapHorizontal(int w1, int w2) const
   return M2;
 }
 
-const Macierz Macierz::SwapVertical(int w1, int w2) const
+const Macierz Macierz::SwapLineVertical(int w1, int w2) const
 {
   Macierz M2(*this);
   if (w1 < 0 || w1 >= ROZMIAR || w2 < 0 || w2 >= ROZMIAR)
@@ -239,7 +239,7 @@ std::ostream& operator << (std::ostream &Strm, const Macierz &Mac)
   {
      for (int j = 0; j < ROZMIAR; j++)
      {
-       Strm << std::setw(SKIP) << Mac[i][j];
+       Strm << std::setw(SKIP) << Mac.transponuj()[i][j];
      }
    Strm  << std::endl;
   }

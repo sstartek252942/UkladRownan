@@ -18,18 +18,19 @@ int main()
 {
   UkladRownanLiniowych   UklRown;   // To tylko przykladowe definicje zmiennej
 
- /* Macierz M1,M2;
+  /*Macierz M1,M2;
   std::cin >> M1;
-  std::cin >> M2;
-  std::cout << "Macierz A:"<< std::endl << M1 << std::endl;
-  std::cout << "Macierz A:"<< std::endl << M1.odwroc() << std::endl; */
+  M2 = M1;
+  M1 = M1.transponuj();
+  std::cout << "Macierz A1:"<< std::endl << M1 << std::endl;
+  std::cout << "Macierz A2:"<< std::endl << M2 << std::endl;*/
 
   std::cout << std::endl << " Start programu " << std::endl << std::endl;
   std::cin >> UklRown;
   std::cout << "Macierz A^T:" << std::endl; 
-  std::cout << UklRown.getmacierz() << std::endl;
+  std::cout << UklRown.getmacierz().transponuj() << std::endl;
   std::cout << "Macierz A:" << std::endl; 
-  std::cout << UklRown.getmacierz().transponuj() *  UklRown.getmacierz()<< std::endl;
+  std::cout << UklRown.getmacierz()<< std::endl;
 
   std::cout << "Wektor[0]:" << UklRown.getmacierz()[0] << std::endl;
   std::cout << "Wektor[1]:" << UklRown.getmacierz()[1] << std::endl;

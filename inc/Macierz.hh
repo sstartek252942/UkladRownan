@@ -10,11 +10,12 @@ enum MetodaWyznacznika {laplace, gauss, sarrus};
 
 
 class Macierz {
-  Wektor array[ROZMIAR]; //Program dziala na macierzach poziomych, ale macierzy transponowanej (czyli wlasciwie na pionowych zwyklej)
+  Wektor array[ROZMIAR]; //Program dziala na macierzach pionowych
+
+  double dopelnienie(int x, int y) const;
 
   public: 
   Macierz();
-  /*Macierz(double *array);*/
   Macierz(Wektor A, Wektor B, Wektor C);
   Macierz(const Macierz & M2);
 
@@ -24,23 +25,22 @@ class Macierz {
   const Macierz operator +(const Macierz & B) const;
   const Macierz operator -(const Macierz & B) const;
   const Macierz operator *(const Macierz & B) const;
+
   const Macierz operator *(double B) const;
+  const Wektor operator *(const Wektor & W) const;
 
   bool operator == (const Macierz & W2) const;
   bool operator != (const Macierz & W2) const;
   
-  Macierz transponuj() const;
-  //void transponuj();
+  const Macierz SwapLineVertical(int w1, int w2) const;
+  const Macierz SwapLineHorizontal(int w1, int w2) const;
 
-  double Wyznacznik(MetodaWyznacznika metoda = sarrus) const;
-  const Macierz SwapVertical(int w1, int w2) const;
-  const Macierz SwapHorizontal(int w1, int w2) const;
-
-  const Wektor operator *(const Wektor & W) const;
-
-  double dopelnienie(int x, int y) const;
+  const Macierz transponuj() const;
   const Macierz odwroc() const;
-  //void odwroc(); //z definicji, gauss
+  double Wyznacznik(MetodaWyznacznika metoda = sarrus) const;
+
+  
+
 };
 
 
