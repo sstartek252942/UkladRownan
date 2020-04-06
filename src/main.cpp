@@ -37,9 +37,9 @@ int main()
   std::cout << "Wektor[2]:" << UklRown.getmacierz()[2] << std::endl;
 
   std::cout << std::endl;
-  std::cout << "Wyznacznik - Sarrus:\t" << UklRown.getmacierz().Wyznacznik() << std::endl;
-  std::cout << "Wyznacznik - Laplace:\t" << UklRown.getmacierz().Wyznacznik() << std::endl;
-  std::cout << "Wyznacznik - Gauss:\t" << UklRown.getmacierz().Wyznacznik() << std::endl;
+  std::cout << "Wyznacznik - Sarrus:\t" << UklRown.getmacierz().Wyznacznik(sarrus) << std::endl;
+  std::cout << "Wyznacznik - Laplace:\t" << UklRown.getmacierz().Wyznacznik(laplace) << std::endl;
+  std::cout << "Wyznacznik - Gauss:\t" << UklRown.getmacierz().Wyznacznik(gauss) << std::endl;
 
   std::cout << std::endl;
   std::cout << "Wektor wyrazow wolnych b:" << std::endl;  

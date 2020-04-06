@@ -9,11 +9,11 @@ Macierz::Macierz()
        this->array[i][j] = 0;
 }
 
-Macierz::Macierz(const Macierz & M2)
+/*Macierz::Macierz(const Macierz & M2)
 {
   for (int i=0; i<ROZMIAR; i++)
   (*this)[i] = M2[i];
-}
+}*/
 
 Macierz::Macierz(Wektor A, Wektor B, Wektor C)
 {
@@ -23,7 +23,7 @@ Macierz::Macierz(Wektor A, Wektor B, Wektor C)
 }
 
 //************Metody:Getter i Setter************//
-const Wektor  & Macierz::operator[] (int index) const
+const Wektor & Macierz::operator[] (int index) const
 {
   if (index < 0 || index >= ROZMIAR) 
   {
@@ -44,7 +44,7 @@ Wektor & Macierz::operator[] (int index)
 }
 
 //************Metody operatorow arytmetycznych************//
-const Macierz Macierz::operator +(const Macierz & M2) const
+Macierz Macierz::operator + (const Macierz & M2) const
 {
   Macierz temp;
   for (int i = 0; i < ROZMIAR; i++)    
@@ -54,7 +54,7 @@ const Macierz Macierz::operator +(const Macierz & M2) const
   return temp;
 }
 
-const Macierz Macierz::operator -(const Macierz & M2) const
+Macierz Macierz::operator - (const Macierz & M2) const
 {
   Macierz temp;
   for (int i = 0; i < ROZMIAR; i++)    
@@ -64,7 +64,7 @@ const Macierz Macierz::operator -(const Macierz & M2) const
   return temp;
 }
 
-const Macierz Macierz::operator *(const Macierz & M2) const
+Macierz Macierz::operator * (const Macierz & M2) const
 {
   Macierz M1T((*this).transponuj());
   Macierz temp;
@@ -79,7 +79,7 @@ const Macierz Macierz::operator *(const Macierz & M2) const
   return temp;
 }
 
-const Macierz Macierz::operator *(double a) const 
+Macierz Macierz::operator * (double a) const 
 {
   Macierz temp;
   for (int i = 0; i < ROZMIAR; i++)    
@@ -105,7 +105,7 @@ bool Macierz::operator != (const Macierz & M2) const
   return !(*this==M2);
 }
   
-const Macierz Macierz::transponuj() const
+Macierz Macierz::transponuj() const
 {
   Macierz M2;
   for (int j = 0; j < ROZMIAR; j++)
@@ -115,7 +115,7 @@ const Macierz Macierz::transponuj() const
   return M2;
 }
 
-const Wektor Macierz::operator *(const Wektor & W) const
+Wektor Macierz::operator * (const Wektor & W) const
 {
   Wektor tempW;
   for (int i = 0; i < ROZMIAR; i++)    
@@ -142,7 +142,7 @@ double Macierz::dopelnienie(int x, int y) const
   return temp;
 }
 
-const Macierz Macierz::odwroc() const
+Macierz Macierz::odwroc() const
 {
   Macierz M2;
   double Wyznacznik = (*this).Wyznacznik();
@@ -158,34 +158,64 @@ double Macierz::Wyznacznik(MetodaWyznacznika metoda) const //sarrus, laplace, ga
 {
   double temp = 0;
   switch(metoda){
-  case sarrus:
+  case sarrus:		//Macierz 3x3
     for (int i = 0; i < ROZMIAR; i++)
       temp += (*this)[i % ROZMIAR][0] * (*this)[(i+1) % ROZMIAR][1] * (*this)[(i+2) % ROZMIAR][2];
     for (int i = 0; i < ROZMIAR; i++)
       temp -= (*this)[i % ROZMIAR][0] * (*this)[(i+2) % ROZMIAR][1] * (*this)[(i+1) % ROZMIAR][2];
     return temp;
 
-  case laplace:
-    temp += (*this)[0][0] * ((*this).dopelnienie(0,0));
-    temp -= (*this)[1][0] * ((*this).dopelnienie(1,0));
-    temp += (*this)[2][0] * ((*this).dopelnienie(2,0));
+  case laplace:		//Macierz 3x3, dla innych trzeba poprawić dopelnienie
+    for (int i = 0; i < ROZMIAR; i++)
+    temp += (*this)[i][0] * ((*this).dopelnienie(i,0));
     return temp;
   
-  case gauss:
+  case gauss: //Macierz dowolna
     Macierz tempMacierz(*this);
+    temp = 1;
+    for (int i = 0; i < ROZMIAR-1; i++)
+    {
+      //podmienianie  
+      bool flag = false;
+      int j = i;        
+      while (!flag && j < ROZMIAR)
+      {
+        if (tempMacierz[i][j] != 0)
+        {
+          if (i != j) 
+          {
+            tempMacierz = tempMacierz.SwapLineVertical(i, j);
+            temp *= -1;
+          }
+          flag = true;
+        }
+        j++;
+      }
+      //wyznacznik 0, bo nie da się podzielic i zostaly same zera
+      if (!flag) return 0;
 
-    tempMacierz[1] = tempMacierz[1] - tempMacierz[0] * (tempMacierz[1][0] / tempMacierz[0][0]);
-    tempMacierz[2] = tempMacierz[2] - tempMacierz[0] * (tempMacierz[2][0] / tempMacierz[0][0]);
-    tempMacierz[2] = tempMacierz[2] - tempMacierz[1] * (tempMacierz[2][1] / tempMacierz[1][1]);
+      //odejmowanie
+      for (int k = i+1; k < ROZMIAR; k++)
+      {
+        tempMacierz[k] = tempMacierz[k] - tempMacierz[i] * (tempMacierz[k][i] / tempMacierz[i][i]);
+      }
+    }
+    
+    for (int i = 0; i < ROZMIAR; i++)
+    {
+      temp *= tempMacierz[i][i];
+    }
+    //tempMacierz[1] = tempMacierz[1] - tempMacierz[0] * (tempMacierz[1][0] / tempMacierz[0][0]);
+    //tempMacierz[2] = tempMacierz[2] - tempMacierz[0] * (tempMacierz[2][0] / tempMacierz[0][0]);
+    //tempMacierz[2] = tempMacierz[2] - tempMacierz[1] * (tempMacierz[2][1] / tempMacierz[1][1]);
 
-    temp += tempMacierz[0][0] * tempMacierz[1][1] * tempMacierz[2][2];
     return temp;
   }
   std::cerr << ERROROUTOFENUM << std::endl;
   exit(0);
 }
 
-const Macierz Macierz::SwapLineHorizontal(int w1, int w2) const
+Macierz Macierz::SwapLineHorizontal(int w1, int w2) const
 {
   Macierz M2((*this).transponuj());
   if (w1 < 0 || w1 >= ROZMIAR || w2 < 0 || w2 >= ROZMIAR)
@@ -201,7 +231,7 @@ const Macierz Macierz::SwapLineHorizontal(int w1, int w2) const
   return M2;
 }
 
-const Macierz Macierz::SwapLineVertical(int w1, int w2) const
+Macierz Macierz::SwapLineVertical(int w1, int w2) const
 {
   Macierz M2(*this);
   if (w1 < 0 || w1 >= ROZMIAR || w2 < 0 || w2 >= ROZMIAR)
@@ -217,7 +247,7 @@ const Macierz Macierz::SwapLineVertical(int w1, int w2) const
 }
 
 //************Funkcje mnozenia************//
-const Macierz operator *(double a, const Macierz M)
+Macierz operator *(double a, const Macierz M)
 {
   return M*a;
 }

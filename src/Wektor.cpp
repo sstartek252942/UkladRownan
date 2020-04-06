@@ -9,7 +9,7 @@ Wektor::Wektor()
   (*this)[i] = 0;
 }
 
-Wektor::Wektor(double xx,double yy,double zz)
+Wektor::Wektor(double xx,double yy,double zz) //Tylko wektor o rozmiarze 3
 {
   (*this)[0] = xx;
   (*this)[1] = yy;
@@ -33,7 +33,7 @@ const double & Wektor::operator[] (int index) const
 {
   if (index < 0 || index >= ROZMIAR) 
   {
-    std::cerr << "poza zakresem" << std::endl;
+    std::cerr << ERROROUTOFBOUNDS << std::endl;
     exit(1);
   }
   return this->array[index];
@@ -43,7 +43,7 @@ double & Wektor::operator[] (int index)
 {
   if (index < 0 || index >= ROZMIAR) 
   {
-    std::cerr << "poza zakresem" << std::endl;
+    std::cerr << ERROROUTOFBOUNDS << std::endl;
     exit(1);
   }
   return this->array[index];
@@ -99,7 +99,12 @@ const Wektor Wektor::operator * (double const &a) const
 
 double Wektor::dlugosc() const
 {
-  return sqrt((*this)[0]*(*this)[0]+(*this)[1]*(*this)[1]+(*this)[2]*(*this)[2]);
+  double tempDouble = 0;
+  for (int i = 0; i < ROZMIAR; i++)
+  {
+    tempDouble = (*this)[i]*(*this)[i];
+  }
+  return sqrt(tempDouble);
 }
 
 bool Wektor::operator == (const Wektor & W2) const
@@ -107,7 +112,7 @@ bool Wektor::operator == (const Wektor & W2) const
   bool flag = true;
   for (int i = 0; i < ROZMIAR; i++)    
   {
-    if ((*this)[i] != W2[i])
+    if (abs((*this)[i]-W2[i])>0.0001)
     flag = false;
   }
   return flag;
@@ -123,7 +128,7 @@ const Wektor Wektor::Swap(int w1, int w2) const
   Wektor W2(*this);
   if (w1 < 0 || w1 >= ROZMIAR || w2 < 0 || w2 >= ROZMIAR)
   {
-    std::cerr << "poza zakresem" << std::endl;
+    std::cerr << ERROROUTOFBOUNDS << std::endl;
     exit(1);
   }
  

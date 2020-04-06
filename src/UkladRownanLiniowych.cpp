@@ -2,12 +2,6 @@
 #include <iomanip>
 
 //************Konstruktory************//
-UkladRownanLiniowych::UkladRownanLiniowych()
-{
-  //this->macierz.();
-  //this->wektor.();
-}
-
 UkladRownanLiniowych::UkladRownanLiniowych(const Macierz & M, const Wektor & W)
 {
   this->macierz = M;
@@ -35,31 +29,32 @@ void UkladRownanLiniowych::setmacierz(const Macierz & M)
 }
 
 //************Metody: Rozwiaz************//
-const Wektor UkladRownanLiniowych::rozwiaz(MetodaUkladu metoda) const
+Wektor UkladRownanLiniowych::rozwiaz(MetodaUkladu metoda) const
 {
-  Macierz M2(this->macierz);
-  Wektor wynik(this->wektor);
+  Macierz tempM2(this->macierz);
+  Wektor wynik;
+  Wektor tempW2(wektor);
 
   switch (metoda){
 
   case cramer:
-    double W,WX,WY,WZ;
-    W = M2.Wyznacznik();
+    double W;
+    W = tempM2.Wyznacznik();
 
-    M2[0] = wektor;
-    WX = M2.Wyznacznik();
-    
-    M2[0] = macierz[0];
-    M2[1] = wektor;
-    WY = M2.Wyznacznik();
-    
-    M2[1] = macierz[1];
-    M2[2] = wektor;
-    WZ = M2.Wyznacznik();
+
+    for (int i = 0; i < ROZMIAR; i++)
+    {
+      tempM2[i] = wektor;
+      wynik[i] = tempM2.Wyznacznik();
+      tempM2[i] = macierz[i];
+    }
 
     if (W != 0)
     {
-      wynik[0] = WX/W; wynik[1] = WY/W; wynik[2] = WZ/W;
+      for (int i = 0; i < ROZMIAR; i++)
+      {
+        wynik[i] = wynik[i]/W;
+      }
       return wynik;
     }
     //else if (WX !=0 || WY != 0 || WZ != 0) std::cerr << "Uklad sprzeczny" << std::endl;
@@ -67,42 +62,60 @@ const Wektor UkladRownanLiniowych::rozwiaz(MetodaUkladu metoda) const
     exit(1);
 
   case gaussjordan:
-    M2 = M2.transponuj();
+    tempM2 = tempM2.transponuj();
 
-    //*****pierwsza kolumna*****//
-    if (M2[0][0] == 0) {if (M2[1][0] == 0) {if (M2[2][0] == 0) {std::cerr << ERRORNOANSWER << std::endl; exit(0);}
-                                          else {M2 = M2.SwapLineVertical(0,2); wynik = wynik.Swap(0,2);}}
-                       else {M2 = M2.SwapLineVertical(0,1); wynik = wynik.Swap(0,1);}}
+    for (int i = 0; i < ROZMIAR-1; i++)
+    {
+      //podmienianie  
+      bool flag = false;
+      int j = i;        
+      while (!flag && j < ROZMIAR)
+      {
+        if (tempM2[i][j] != 0)
+        {
+          if (i != j) 
+          {
+            tempM2 = tempM2.SwapLineVertical(i, j); //praca na macierzy tranponowanej, dlatego nie jest SwapLineHorizontal (tak jak by wynikalo na logike)
+            tempW2 = tempW2.Swap(i,j);
+          }
+          flag = true;
+        }
+        j++;
+      }
+      //wyznacznik 0, bo nie da się podzielic i zostaly same zera
+      if (!flag) {std::cerr << ERRORNOANSWER << std::endl; exit(0);}
 
-    wynik[1] = wynik[1] - wynik[0] * (M2[1][0] / M2[0][0]);	M2[1] = M2[1] - M2[0] * (M2[1][0] / M2[0][0]); 
-    wynik[2] = wynik[2] - wynik[0] * (M2[2][0] / M2[0][0]);	M2[2] = M2[2] - M2[0] * (M2[2][0] / M2[0][0]); 
+      //odejmowanie, aby powstala macierz trojkatna
+      for (int k = i+1; k < ROZMIAR; k++)
+      {
+        tempW2[k] = tempW2[k] - tempW2[i] * (tempM2[k][i] / tempM2[i][i]);	
+        tempM2[k] = tempM2[k] - tempM2[i] * (tempM2[k][i] / tempM2[i][i]); 
+      }
+    }
     
-    //*****druga kolumna*****//
-    if (M2[1][1] == 0) {if (M2[2][1] == 0) {std::cerr << ERRORNOANSWER << std::endl; exit(0);}
-                       else {M2 = M2.SwapLineVertical(1,2); wynik = wynik.Swap(1,2);}}
-
-    wynik[2] = wynik[2] - wynik[1] * (M2[2][1] / M2[1][1]);	M2[2] = M2[2] - M2[1] * (M2[2][1] / M2[1][1]); 
-
+    //sprawdzanie czy ostatni element ostatniego wiersza nie jest rowny 0, co oznaczaloby, ze caly ostatni wiersz jest 0
+    if (tempM2[ROZMIAR-1][ROZMIAR-1] == 0) {std::cerr << ERRORNOANSWER << std::endl; exit(0);}
     
-    //*****trzecia kolumna*****// 
-    if (M2[2][2] == 0) {std::cerr << ERRORNOANSWER << std::endl; exit(0);}
-    wynik[0] = wynik[0] - wynik[2] * (M2[0][2] / M2[2][2]);	M2[0] = M2[0] - M2[2] * (M2[0][2] / M2[2][2]); 
-    wynik[1] = wynik[1] - wynik[2] * (M2[1][2] / M2[2][2]);	M2[1] = M2[1] - M2[2] * (M2[1][2] / M2[2][2]); 
-
-    
-    //*****druga kolumna*****//
-    wynik[0] = wynik[0] - wynik[1] * (M2[0][1] / M2[1][1]);	M2[0] = M2[0] - M2[1] * (M2[0][1] / M2[1][1]); 
-
+    for (int i = ROZMIAR-1; i > 0; i--)
+    {
+      //odejmowanie, aby powstala macierz diagonalna
+      for (int k = i-1; k >= 0; k--)
+      {
+        tempW2[k] = tempW2[k] - tempW2[i] * (tempM2[k][i] / tempM2[i][i]);	
+        tempM2[k] = tempM2[k] - tempM2[i] * (tempM2[k][i] / tempM2[i][i]); 
+      }
+    }
     
     //*****Rozwiazanie*****//
-    wynik[0] = wynik[0]/M2[0][0]; 
-    wynik[1] = wynik[1]/M2[1][1]; 
-    wynik[2] = wynik[2]/M2[2][2];
+    for (int i = 0; i < ROZMIAR; i++)
+    {
+      wynik[i] = tempW2[i]/tempM2[i][i]; 
+    }
     return wynik;
   
   case odwrotna:
-    M2 = M2.odwroc();
-    wynik = M2 * this->wektor;
+    tempM2 = tempM2.odwroc();
+    wynik = tempM2 * wektor;
   return wynik;
 
   }

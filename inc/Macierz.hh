@@ -17,26 +17,26 @@ class Macierz {
   public: 
   Macierz();
   Macierz(Wektor A, Wektor B, Wektor C);
-  Macierz(const Macierz & M2);
+  //Macierz(const Macierz & M2);
 
-  const Wektor  & operator[] (int index) const;
+  const Wektor & operator[] (int index) const;
   Wektor & operator[] (int index);
 
-  const Macierz operator +(const Macierz & B) const;
-  const Macierz operator -(const Macierz & B) const;
-  const Macierz operator *(const Macierz & B) const;
+  Macierz operator + (const Macierz & B) const;
+  Macierz operator - (const Macierz & B) const;
+  Macierz operator * (const Macierz & B) const;
 
-  const Macierz operator *(double B) const;
-  const Wektor operator *(const Wektor & W) const;
+  Macierz operator * (double B) const;
+  Wektor  operator * (const Wektor & W) const;
 
   bool operator == (const Macierz & W2) const;
   bool operator != (const Macierz & W2) const;
   
-  const Macierz SwapLineVertical(int w1, int w2) const;
-  const Macierz SwapLineHorizontal(int w1, int w2) const;
+  Macierz SwapLineVertical(int w1, int w2) const;
+  Macierz SwapLineHorizontal(int w1, int w2) const;
 
-  const Macierz transponuj() const;
-  const Macierz odwroc() const;
+  Macierz transponuj() const;
+  Macierz odwroc() const;
   double Wyznacznik(MetodaWyznacznika metoda = sarrus) const;
 
   
@@ -44,25 +44,11 @@ class Macierz {
 };
 
 
-/*
- * To przeciazenie trzeba opisac. Co ono robi. Jaki format
- * danych akceptuje. Jakie jest znaczenie parametrow itd.
- * Szczegoly dotyczace zalecen realizacji opisow mozna
- * znalezc w pliku:
- *    ~bk/edu/kpo/zalecenia.txt 
- */
 std::istream& operator >> (std::istream &Strm, Macierz &Mac);
 
-/*
- * To przeciazenie trzeba opisac. Co ono robi. Jaki format
- * danych akceptuje. Jakie jest znaczenie parametrow itd.
- * Szczegoly dotyczace zalecen realizacji opisow mozna
- * znalezc w pliku:
- *    ~bk/edu/kpo/zalecenia.txt 
- */
 std::ostream& operator << (std::ostream &Strm, const Macierz &Mac);
 
-const Macierz operator *(double B, const Macierz M);
+Macierz operator *(double B, const Macierz M);
 
 //Macierz MacierzJednostkowa();
 
