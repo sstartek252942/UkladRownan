@@ -146,11 +146,13 @@ Macierz Macierz::odwroc() const
 {
   Macierz M2;
   double Wyznacznik = (*this).Wyznacznik();
-  if (Wyznacznik != 0){
-  for (int j = 0; j < ROZMIAR; j++)
-    for (int i = 0; i < ROZMIAR; i++)
+  if (Wyznacznik != 0)
+  {
+    for (int j = 0; j < ROZMIAR; j++)
+      for (int i = 0; i < ROZMIAR; i++)
         M2[i][j] = (*this).dopelnienie(i,j) / Wyznacznik;
   }
+  else throw THROWDIVIDEZERO;
   return M2.transponuj();
 }
 

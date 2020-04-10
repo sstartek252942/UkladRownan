@@ -50,7 +50,7 @@ double & Wektor::operator[] (int index)
 }
 
 //************Metody operatorow arytmetycznych************//
-const Wektor Wektor::operator + (Wektor const &Wek) const
+Wektor Wektor::operator + (Wektor const &Wek) const
 {
   Wektor tempWek;
   double tempDouble;
@@ -62,7 +62,7 @@ const Wektor Wektor::operator + (Wektor const &Wek) const
   return tempWek;
 }
 
-const Wektor Wektor::operator - (Wektor const &Wek) const
+Wektor Wektor::operator - (Wektor const &Wek) const
 {
   Wektor tempWek;
   double tempDouble;
@@ -85,15 +85,25 @@ double Wektor::operator * (Wektor const &Wek) const
   return tempDouble;
 }
 
-const Wektor Wektor::operator * (double const &a) const
+Wektor Wektor::operator * (double const & a) const
 {
   Wektor tempWek;
-  double tempDouble;
   for (int i = 0; i < ROZMIAR; i++)    
   {
-    tempDouble = (*this)[i] * a;
-    tempWek[i]=tempDouble;
+    tempWek[i] = (*this)[i] * a;
   }
+  return tempWek;
+}
+
+Wektor Wektor::operator / (double const & a) const
+{
+  Wektor tempWek;
+  if (a != 0)
+  for (int i = 0; i < ROZMIAR; i++)    
+  {
+    tempWek[i] = (*this)[i] / a;
+  }
+  else throw THROWDIVIDEZERO;
   return tempWek;
 }
 
@@ -123,7 +133,7 @@ bool Wektor::operator != (const Wektor & W2) const
   return !((*this)==W2);
 }
 
-const Wektor Wektor::Swap(int w1, int w2) const
+Wektor Wektor::Swap(int w1, int w2) const
 {
   Wektor W2(*this);
   if (w1 < 0 || w1 >= ROZMIAR || w2 < 0 || w2 >= ROZMIAR)

@@ -22,16 +22,17 @@ class Wektor {
   const double & operator[] (int index) const;
   double & operator[] (int index);
 
-  const Wektor operator + (Wektor const &Wek) const;
-  const Wektor operator - (Wektor const &Wek) const;
+  Wektor operator + (Wektor const &Wek) const;
+  Wektor operator - (Wektor const &Wek) const;
   double operator * (Wektor const &Wek) const;
-  const Wektor operator * (double const &a) const;
+  Wektor operator * (double const & a) const;
+  Wektor operator / (double const & a) const;
 
   double dlugosc() const;
 
   bool operator== (const Wektor & W2) const;
   bool operator!= (const Wektor & W2) const;
-  const Wektor Swap(int w1, int w2) const;
+  Wektor Swap(int w1, int w2) const;
 };
 
 Wektor operator*(double a, const Wektor & W2);

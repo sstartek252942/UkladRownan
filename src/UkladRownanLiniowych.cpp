@@ -58,8 +58,7 @@ Wektor UkladRownanLiniowych::rozwiaz(MetodaUkladu metoda) const
       return wynik;
     }
     //else if (WX !=0 || WY != 0 || WZ != 0) std::cerr << "Uklad sprzeczny" << std::endl;
-    else std::cerr << ERRORNOANSWER << std::endl;
-    exit(1);
+    else throw THROWNOANSWER;
 
   case gaussjordan:
     tempM2 = tempM2.transponuj();
@@ -83,26 +82,26 @@ Wektor UkladRownanLiniowych::rozwiaz(MetodaUkladu metoda) const
         j++;
       }
       //wyznacznik 0, bo nie da się podzielic i zostaly same zera
-      if (!flag) {std::cerr << ERRORNOANSWER << std::endl; exit(0);}
+      if (!flag) throw THROWNOANSWER;
 
       //odejmowanie, aby powstala macierz trojkatna
       for (int k = i+1; k < ROZMIAR; k++)
       {
-        tempW2[k] = tempW2[k] - tempW2[i] * (tempM2[k][i] / tempM2[i][i]);	
-        tempM2[k] = tempM2[k] - tempM2[i] * (tempM2[k][i] / tempM2[i][i]); 
+        tempW2[k] = tempW2[k] - tempW2[i] * tempM2[k][i] / tempM2[i][i];	
+        tempM2[k] = tempM2[k] - tempM2[i] * tempM2[k][i] / tempM2[i][i]; 
       }
     }
     
     //sprawdzanie czy ostatni element ostatniego wiersza nie jest rowny 0, co oznaczaloby, ze caly ostatni wiersz jest 0
-    if (tempM2[ROZMIAR-1][ROZMIAR-1] == 0) {std::cerr << ERRORNOANSWER << std::endl; exit(0);}
+    if (tempM2[ROZMIAR-1][ROZMIAR-1] == 0) throw THROWNOANSWER;
     
     for (int i = ROZMIAR-1; i > 0; i--)
     {
       //odejmowanie, aby powstala macierz diagonalna
       for (int k = i-1; k >= 0; k--)
       {
-        tempW2[k] = tempW2[k] - tempW2[i] * (tempM2[k][i] / tempM2[i][i]);	
-        tempM2[k] = tempM2[k] - tempM2[i] * (tempM2[k][i] / tempM2[i][i]); 
+        tempW2[k] = tempW2[k] - tempW2[i] * tempM2[k][i] / tempM2[i][i];	
+        tempM2[k] = tempM2[k] - tempM2[i] * tempM2[k][i] / tempM2[i][i]; 
       }
     }
     
