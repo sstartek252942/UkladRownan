@@ -112,7 +112,7 @@ double Wektor::dlugosc() const
   double tempDouble = 0;
   for (int i = 0; i < ROZMIAR; i++)
   {
-    tempDouble = (*this)[i]*(*this)[i];
+    tempDouble += (*this)[i]*(*this)[i];
   }
   return sqrt(tempDouble);
 }
